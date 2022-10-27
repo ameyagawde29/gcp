@@ -21,19 +21,18 @@ class ReadFile(beam.DoFn):
     def process(self, something):
         clear_data = []
         with open(self.input_path) as fin:
-            for line in fin:
-                data = json.loads(line)
-                product = data.get('product')
+            data = json.loads(json.dumps(data))
+            product = data.get('product')
 
-                if product and product.get('id'):
-                    product_id = str(product.get('id'))
-                    vendor = product.get('vendor')
-                    product_type = product.get('product_type')
-                    updated_at = product.get('updated_at')
-                    created_at = product.get('created_at')
-                    product_options = product.get('options')
-                    
-                    clear_data.append([product_id, vendor, product_type, updated_at, created_at])
+            if product and product.get('id'):
+                product_id = str(product.get('id'))
+                vendor = product.get('vendor')
+                product_type = product.get('product_type')
+                updated_at = product.get('updated_at')
+                created_at = product.get('created_at')
+                product_options = product.get('options')
+                
+                clear_data.append([product_id, vendor, product_type, updated_at, created_at])
 
         yield clear_data
 
