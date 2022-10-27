@@ -15,6 +15,7 @@ class ReadFile(beam.DoFn):
         self.input_path = input_path
 
     def start_bundle(self):
+        from google.cloud import storage
         self.client = storage.Client()
 
     def process(self, something):
@@ -43,6 +44,7 @@ class WriteCSVFIle(beam.DoFn):
         self.bucket_name = bucket_name
 
     def start_bundle(self):
+        from google.cloud import storage
         self.client = storage.Client()
 
     def process(self, mylist):
