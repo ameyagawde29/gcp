@@ -7,30 +7,10 @@ import pandas as pd
 from apache_beam.options.pipeline_options import PipelineOptions
 from google.cloud import storage
 from smart_open import open
-import os
 
-#os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = 'project-demo-1508-9f80e4c2c1c6.json'
-
-""" sample json that we are going to be parsing through our program, store this in a gcs bucket and then
-run this script which converts 
-{
-    "product": {
-        "id": "1234567890",
-        "title": "Awesome Product",
-        "vendor": "Vendor Test",
-        "product_type": "Test",
-        "created_at": "2022-10-11T16:07:45-4:00",
-        "updated_at": "2022-10-15T14:32:09-4:00",
-        "options": [
-            {
-                "id": "1234567890"
-            }
-        ]
-    }
-}
-"""
 
 class ReadFile(beam.DoFn):
+
     def __init__(self, input_path):
         self.input_path = input_path
 
@@ -40,30 +20,24 @@ class ReadFile(beam.DoFn):
     def process(self, something):
         clear_data = []
         with open(self.input_path) as fin:
-            data = json.loads(fin.read())
-            product = data.get('product')
-        
-        
-        if product and product.get('id'): #verifies if there exists a key/value pair
-            product_id = product.get('id')
-            vendor = product.get('vendor')
-            product_type = product.get('product_type')
-            updated_at = product.get('updated_at')
-            created_at = product.get('created_at')
-            
-            """product_options = product.get('product_options')
+            for line in fin:
+                data = json.loads(line)
+                product = data.get('product')
 
-            option_ids =[]
-
-            if product_options: 
-                for option in product_options:
-                    option_ids.append(option.get('id'))"""
-
-            clear_data.append([product_id, vendor, product_type, updated_at, created_at])
+                if product and product.get('id'):
+                    product_id = str(product.get('id'))
+                    vendor = product.get('vendor')
+                    product_type = product.get('product_type')
+                    updated_at = product.get('updated_at')
+                    created_at = product.get('created_at')
+                    product_options = product.get('options')
+                    
+                    clear_data.append([product_id, vendor, product_type, updated_at, created_at])
 
         yield clear_data
 
-class WriteCSVFile(beam.DoFn):
+
+class WriteCSVFIle(beam.DoFn):
 
     def __init__(self, bucket_name):
         self.bucket_name = bucket_name
@@ -75,15 +49,16 @@ class WriteCSVFile(beam.DoFn):
         df = pd.DataFrame(mylist, columns={'product_id': str, 'vendor': str, 'product_type': str, 'updated_at': str, 'created_at': str})
 
         bucket = self.client.get_bucket(self.bucket_name)
-
         bucket.blob(f"csv_exports.csv").upload_from_string(df.to_csv(index=False), 'text/csv')
+
 
 class DataflowOptions(PipelineOptions):
 
     @classmethod
-    def _add_argparse_args(cls,parser):
+    def _add_argparse_args(cls, parser):
         parser.add_argument('--input_path', type=str, default='gs://new-buclet-8022/input.json')
-        parser.add_argument('--output_bucket', type=str, default='gs://new-buclet-8022/output')
+        parser.add_argument('--output_bucket', type=str, default='gs://new-buclet-8022')
+
 
 def run(argv=None):
     parser = argparse.ArgumentParser()
@@ -94,10 +69,11 @@ def run(argv=None):
 
     with beam.Pipeline(options=pipeline_options) as pipeline:
         (pipeline
-        | 'Start' >> beam.Create([None])
-        | 'Read JSON' >> beam.ParDo(ReadFile(dataflow_options.input_path))
-        | 'Write CSV' >> beam.ParDo(WriteCSVFile(dataflow_options.output_bucket))
-        )
+         | 'Start' >> beam.Create([None])
+         | 'Read JSON' >> beam.ParDo(ReadFile(dataflow_options.input_path))
+         | 'Write CSV' >> beam.ParDo(WriteCSVFIle(dataflow_options.output_bucket))
+         )
+
 
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.INFO)
