@@ -83,8 +83,8 @@ class DataflowOptions(PipelineOptions):
 
     @classmethod
     def _add_argparse_args(cls,parser):
-        parser.add_argument('--input_path', type=str, default='gs://temp-bucket-1508/input.json')
-        parser.add_argument('--output_bucket', type=str, default='gs://temp-bucket-1508/output')
+        parser.add_argument('--input_path', type=str, default='gs://new-buclet-8022/input.json')
+        parser.add_argument('--output_bucket', type=str, default='gs://new-buclet-8022')
 
 def run(argv=None):
     parser = argparse.ArgumentParser()
