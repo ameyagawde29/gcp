@@ -37,11 +37,10 @@ class ReadFile(beam.DoFn):
     def process(self, something):
         clear_data = []
         with open(self.input_path) as fin:
-            ss=fin.read()
-            print(ss)
-            data = json.loads(ss)
-            print(data)
-            product = data.get('product')
+            for line in fin:
+                data = json.loads(line)
+                product = data.get('product')
+        
         
         
         if product and product.get('id'): #verifies if there exists a key/value pair
