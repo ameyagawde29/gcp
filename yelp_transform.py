@@ -1,6 +1,6 @@
 #Transformation for 1 line of Yelp_user dataset
 #yelp_academic_dataset_user.json
-#for doing the entire dataset just add a for loop before checking if there is a key/value pair
+#for doing the entire dataset just added a for loop before checking if there is a key/value pair
 
 import argparse
 import json
@@ -27,30 +27,26 @@ class ReadFile(beam.DoFn):
     def process(self, something):
         clear_data = []
         with open(self.input_path) as fin:
-            ss=fin.read()
-            data = json.loads(ss)
-            product = data.get('root')
+            for line in fin:
+                ss=fin.read()
+                data = json.loads(ss)
+                product = data.get('root')
         
         
         
-        if root and root.get('user_id'): #verifies if there exists a key/value pair
-            user_id = root.get('user_id')
-            name = root.get('name')
-            review_count = root.get('review_count')
-            yelping_since = root.get('yelping_since')
-            useful = root.get('useful')
-            funny = root.get('funny')
-            cool = root.get('cool')
-            elite = root.get('elite')
-            friends = root.get('friends')
+                if root and root.get('user_id'): #verifies if there exists a key/value pair
+                    user_id = root.get('user_id')
+                    name = root.get('name')
+                    review_count = root.get('review_count')
+                    yelping_since = root.get('yelping_since')
+                    useful = root.get('useful')
+                    funny = root.get('funny')
+                    cool = root.get('cool')
+                    elite = root.get('elite')
+                    friends = root.get('friends')
             
-            """product_options = product.get('product_options')
-            option_ids =[]
-            if product_options: 
-                for option in product_options:
-                    option_ids.append(option.get('id'))"""
 
-            clear_data.append([user_id, name, review_count, yelping_since, useful, funny, cool, elite, friends])
+                    clear_data.append([user_id, name, review_count, yelping_since, useful, funny, cool, elite, friends])
 
         yield clear_data
 
