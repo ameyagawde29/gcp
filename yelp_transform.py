@@ -1,4 +1,6 @@
 #Transformation for 1 line of Yelp_user dataset
+#yelp_academic_dataset_user.json
+#for doing the entire dataset just add a for loop before checking if there is a key/value pair
 
 import argparse
 import json
