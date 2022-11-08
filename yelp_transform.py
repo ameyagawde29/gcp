@@ -70,7 +70,7 @@ class DataflowOptions(PipelineOptions):
 
     @classmethod
     def _add_argparse_args(cls,parser):
-        parser.add_argument('--input_path', type=str, default='gs://new-buclet-8022/input.json') #change bucket name here in the 'gs://...' format
+        parser.add_argument('--input_path', type=str, default='gs://new-buclet-8022/yelp.json') #change bucket name here in the 'gs://...' format
         parser.add_argument('--output_bucket', type=str, default='new-buclet-8022') #change bucket name here in similar format to <--
 
 def run(argv=None):
