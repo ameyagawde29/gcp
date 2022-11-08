@@ -15,19 +15,6 @@ import os
 
 #os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = 'project-demo-1508-9f80e4c2c1c6.json'
 
-""" sample json that we are going to be parsing through our program, store this in a gcs bucket and then
-run this script which converts 
-{
-    "product": {
-        "id": "1234567890",
-        "title": "Awesome Product",
-        "vendor": "Vendor Test",
-        "product_type": "Test",
-        "created_at": "2022-10-11T16:07:45-4:00",
-        "updated_at": "2022-10-15T14:32:09-4:00",
-    }
-}
-"""
 
 class ReadFile(beam.DoFn):
     def __init__(self, input_path):
